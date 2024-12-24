@@ -1,5 +1,6 @@
 package tests;
 
+import io.qameta.allure.restassured.AllureRestAssured;
 import models.LoginBodyModel;
 import models.LoginBodyResponseModel;
 import org.junit.jupiter.api.Test;
@@ -30,6 +31,30 @@ public class ReqresTestsModel {
                     .log().body()
                     .statusCode(200)
                     .extract().as(LoginBodyResponseModel.class);
+
+        assertEquals("QpwL5tke4Pnpja7X4", response.getToken());
+    }
+
+    @Test
+    void successfulLoginTestModalAllure () {
+
+        LoginBodyModel loginBodyModel = new LoginBodyModel();
+        loginBodyModel.setEmail("eve.holt@reqres.in");
+        loginBodyModel.setPassword("cityslicka");
+
+        LoginBodyResponseModel response =
+                given()
+                        .filter(new AllureRestAssured())
+                        .log().uri()
+                        .body(loginBodyModel)
+                        .contentType(JSON)
+                        .when()
+                        .post("https://reqres.in/api/login")
+                        .then()
+                        .log().status()
+                        .log().body()
+                        .statusCode(200)
+                        .extract().as(LoginBodyResponseModel.class);
 
         assertEquals("QpwL5tke4Pnpja7X4", response.getToken());
     }
