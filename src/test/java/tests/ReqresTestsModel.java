@@ -7,8 +7,9 @@ import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
 import static io.restassured.http.ContentType.JSON;
-import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static specs.LoginSpec.loginRequestSpec;
+import static specs.LoginSpec.loginResponseSpec;
 
 public class ReqresTestsModel {
 
@@ -54,6 +55,25 @@ public class ReqresTestsModel {
                         .log().status()
                         .log().body()
                         .statusCode(200)
+                        .extract().as(LoginBodyResponseModel.class);
+
+        assertEquals("QpwL5tke4Pnpja7X4", response.getToken());
+    }
+
+    @Test
+    void successfulLoginTestModalAllureSpecs () {
+
+        LoginBodyModel loginBodyModel = new LoginBodyModel();
+        loginBodyModel.setEmail("eve.holt@reqres.in");
+        loginBodyModel.setPassword("cityslicka");
+
+        LoginBodyResponseModel response =
+                given(loginRequestSpec)
+                        .body(loginBodyModel)
+                        .when()
+                        .post()
+                        .then()
+                        .spec(loginResponseSpec)
                         .extract().as(LoginBodyResponseModel.class);
 
         assertEquals("QpwL5tke4Pnpja7X4", response.getToken());
